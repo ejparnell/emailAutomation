@@ -14,3 +14,10 @@ export { requireRole } from './requireRole';
 export { requireOwnershipOrRole } from './requireOwnershipOrRole';
 export { requireConnectedGoogle } from './requireConnectedGoogle';
 export { validate } from './validate';
+export {
+    strictRateLimiter,
+    standardRateLimiter,
+    lenientRateLimiter,
+    globalRateLimiter,
+    apiRateLimiter,
+} from './rateLimiter';

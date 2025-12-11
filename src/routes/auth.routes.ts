@@ -7,7 +7,7 @@ import {
     logout,
     getCurrentUser,
 } from '../controllers/auth.controller';
-import { requireUser } from '../middleware';
+import { requireUser, strictRateLimiter } from '../middleware';
 
 const router = Router();
 
@@ -15,15 +15,17 @@ const router = Router();
  * @route   GET /auth/google
  * @desc    Initiate Google OAuth login
  * @access  Public
+ * @security Strict rate limiting (5 requests per 15 minutes)
  */
-router.get('/google', googleLogin);
+router.get('/google', strictRateLimiter, googleLogin);
 
 /**
  * @route   GET /auth/google/callback
  * @desc    Google OAuth callback URL
  * @access  Public
+ * @security Strict rate limiting (5 requests per 15 minutes)
  */
-router.get('/google/callback', googleCallback);
+router.get('/google/callback', strictRateLimiter, googleCallback);
 
 /**
  * @route   GET /auth/success

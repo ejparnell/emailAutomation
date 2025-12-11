@@ -10,11 +10,14 @@ import session from 'express-session';
 import passport from './config/passport';
 import Logger from './utils/logger';
 import authRoutes from './routes/auth.routes';
-import { attachUserFromSession } from './middleware';
+import { attachUserFromSession, globalRateLimiter, lenientRateLimiter } from './middleware';
 
 const app: Application = express();
 
 app.use(helmet());
+
+// Global rate limiter - protects all routes against brute force attacks
+app.use(globalRateLimiter);
 
 app.use(
     cors({
@@ -61,7 +64,7 @@ if (process.env.NODE_ENV !== 'test') {
 
 app.use('/auth', authRoutes);
 
-app.get('/health', (_req: Request, res: Response) => {
+app.get('/health', lenientRateLimiter, (_req: Request, res: Response) => {
     res.status(200).json({
         status: 'ok',
         timestamp: new Date().toISOString(),
