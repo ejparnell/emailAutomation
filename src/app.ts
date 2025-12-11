@@ -1,6 +1,5 @@
 import dotenv from 'dotenv';
 
-// Load environment variables first, before any other imports
 dotenv.config();
 
 import express, { Application, Request, Response } from 'express';
@@ -11,6 +10,7 @@ import session from 'express-session';
 import passport from './config/passport';
 import Logger from './utils/logger';
 import authRoutes from './routes/auth.routes';
+import { attachUserFromSession } from './middleware';
 
 const app: Application = express();
 
@@ -25,8 +25,6 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Session configuration
-// TODO: Add SESSION_SECRET to your .env file
 app.use(
     session({
         secret: process.env.SESSION_SECRET || 'your-secret-key-here',
@@ -35,14 +33,15 @@ app.use(
         cookie: {
             secure: process.env.NODE_ENV === 'production',
             httpOnly: true,
-            maxAge: 24 * 60 * 60 * 1000, // 24 hours
+            maxAge: 24 * 60 * 60 * 1000,
         },
     })
 );
 
-// Initialize Passport and restore authentication state from session
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use(attachUserFromSession);
 
 if (process.env.NODE_ENV !== 'test') {
     const morganFormat =
@@ -60,7 +59,6 @@ if (process.env.NODE_ENV !== 'test') {
     );
 }
 
-// Routes
 app.use('/auth', authRoutes);
 
 app.get('/health', (_req: Request, res: Response) => {

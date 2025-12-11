@@ -1,9 +1,14 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
+export type Role = 'USER' | 'ADMIN';
+
 export interface IUser extends Document {
     email: string;
     name: string;
     timeZone: string;
+    roles: Role[];
+    googleAccessToken?: string;
+    googleRefreshToken?: string;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -31,6 +36,17 @@ const userSchema = new Schema<IUser>(
             required: true,
             default: 'America/New_York',
         },
+        roles: {
+            type: [String],
+            enum: ['USER', 'ADMIN'],
+            default: ['USER'],
+        },
+        googleAccessToken: {
+            type: String,
+        },
+        googleRefreshToken: {
+            type: String,
+        },
     },
     {
         timestamps: true,
@@ -42,6 +58,8 @@ userSchema.set('toJSON', {
         ret.id = ret._id.toString();
         delete ret._id;
         delete ret.__v;
+        delete ret.googleAccessToken;
+        delete ret.googleRefreshToken;
         return ret;
     },
 });

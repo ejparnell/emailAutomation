@@ -49,6 +49,7 @@ export const authSuccess = (req: Request, res: Response): void => {
             email: user.email,
             name: user.name,
             timeZone: user.timeZone,
+            roles: user.roles,
         },
     });
 };
@@ -112,12 +113,14 @@ export const getCurrentUser = (req: Request, res: Response): void => {
             email: user.email,
             name: user.name,
             timeZone: user.timeZone,
+            roles: user.roles,
         },
     });
 };
 
 /**
  * Middleware to check if user is authenticated
+ * @deprecated Use requireUser middleware instead
  */
 export const isAuthenticated = (
     req: Request,

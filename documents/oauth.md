@@ -79,9 +79,9 @@ Copy the output and use it as your `SESSION_SECRET` in the `.env` file.
   for Redis/MongoDB (production)
 - Session cookie expires after **24 hours**
 - Cookies are:
-  - **httpOnly**: Cannot be accessed via JavaScript (XSS protection)
-  - **secure**: Only sent over HTTPS in production
-  - **sameSite**: CSRF protection
+    - **httpOnly**: Cannot be accessed via JavaScript (XSS protection)
+    - **secure**: Only sent over HTTPS in production
+    - **sameSite**: CSRF protection
 
 ## API Endpoints
 

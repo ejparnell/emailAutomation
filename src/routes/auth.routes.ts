@@ -6,8 +6,8 @@ import {
     authFailure,
     logout,
     getCurrentUser,
-    isAuthenticated,
 } from '../controllers/auth.controller';
+import { requireUser } from '../middleware';
 
 const router = Router();
 
@@ -51,6 +51,6 @@ router.get('/logout', logout);
  * @desc    Get current user
  * @access  Private
  */
-router.get('/user', isAuthenticated, getCurrentUser);
+router.get('/user', requireUser, getCurrentUser);
 
 export default router;

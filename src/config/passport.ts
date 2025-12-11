@@ -28,8 +28,8 @@ passport.use(
             scope: ['profile', 'email'],
         },
         async (
-            _accessToken: string,
-            _refreshToken: string,
+            accessToken: string,
+            refreshToken: string,
             profile: Profile,
             done: VerifyCallback
         ) => {
@@ -56,6 +56,11 @@ passport.use(
                 let user = await User.findOne({ email });
 
                 if (user) {
+                    user.googleAccessToken = accessToken;
+                    if (refreshToken) {
+                        user.googleRefreshToken = refreshToken;
+                    }
+                    await user.save();
                     Logger.info(`Existing user logged in: ${email}`);
                     return done(null, user);
                 }
@@ -64,6 +69,8 @@ passport.use(
                     email,
                     name,
                     timeZone: 'America/New_York',
+                    googleAccessToken: accessToken,
+                    googleRefreshToken: refreshToken,
                 });
 
                 await user.save();
