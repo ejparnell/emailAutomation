@@ -15,8 +15,7 @@ mongoose.connection.on('disconnected', () => {
 
 export const connectDB = async (): Promise<void> => {
     const MONGODB_URI =
-        process.env.MONGODB_URI ||
-        'mongodb://localhost:27017/emailautomation';
+        process.env.MONGODB_URI || 'mongodb://localhost:27017/emailautomation';
 
     try {
         await mongoose.connect(MONGODB_URI);

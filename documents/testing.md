@@ -99,8 +99,8 @@ Tests are organized in the `tests/` directory at the root of the project.
 
 - Test files should end with `.test.ts` or `.spec.ts`
 - Name test files to match the file being tested:
-    - `userController.ts` → `userController.test.ts`
-    - `authRoutes.ts` → `authRoutes.test.ts`
+  - `userController.ts` → `userController.test.ts`
+  - `authRoutes.ts` → `authRoutes.test.ts`
 
 ### Directory Structure
 

@@ -1,8 +1,16 @@
+import dotenv from 'dotenv';
+
+// Load environment variables first, before any other imports
+dotenv.config();
+
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import session from 'express-session';
+import passport from './config/passport';
 import Logger from './utils/logger';
+import authRoutes from './routes/auth.routes';
 
 const app: Application = express();
 
@@ -16,6 +24,25 @@ app.use(
 );
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Session configuration
+// TODO: Add SESSION_SECRET to your .env file
+app.use(
+    session({
+        secret: process.env.SESSION_SECRET || 'your-secret-key-here',
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+            secure: process.env.NODE_ENV === 'production',
+            httpOnly: true,
+            maxAge: 24 * 60 * 60 * 1000, // 24 hours
+        },
+    })
+);
+
+// Initialize Passport and restore authentication state from session
+app.use(passport.initialize());
+app.use(passport.session());
 
 if (process.env.NODE_ENV !== 'test') {
     const morganFormat =
@@ -33,7 +60,10 @@ if (process.env.NODE_ENV !== 'test') {
     );
 }
 
-app.get('/health', (req: Request, res: Response) => {
+// Routes
+app.use('/auth', authRoutes);
+
+app.get('/health', (_req: Request, res: Response) => {
     res.status(200).json({
         status: 'ok',
         timestamp: new Date().toISOString(),
@@ -49,7 +79,7 @@ app.use((req: Request, res: Response) => {
 });
 
 app.use(
-    (err: Error, req: Request, res: Response, next: express.NextFunction) => {
+    (err: Error, _req: Request, res: Response, _next: express.NextFunction) => {
         Logger.error(`Error: ${err.message}`, { stack: err.stack });
         res.status(500).json({
             error: 'Internal Server Error',
