@@ -10,6 +10,7 @@ import session from 'express-session';
 import passport from './config/passport';
 import Logger from './utils/logger';
 import authRoutes from './routes/auth.routes';
+import emailRoutes from './routes/email.routes';
 import { attachUserFromSession, globalRateLimiter, lenientRateLimiter } from './middleware';
 
 const app: Application = express();
@@ -63,6 +64,7 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 app.use('/auth', authRoutes);
+app.use('/api/emails', emailRoutes);
 
 app.get('/health', lenientRateLimiter, (_req: Request, res: Response) => {
     res.status(200).json({

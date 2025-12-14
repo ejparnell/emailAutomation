@@ -25,7 +25,11 @@ passport.use(
             clientID: GOOGLE_CLIENT_ID,
             clientSecret: GOOGLE_CLIENT_SECRET,
             callbackURL: GOOGLE_CALLBACK_URL,
-            scope: ['profile', 'email'],
+            scope: [
+                'profile',
+                'email',
+                'https://www.googleapis.com/auth/gmail.readonly',
+            ],
         },
         async (
             accessToken: string,
