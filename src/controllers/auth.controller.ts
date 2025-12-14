@@ -13,7 +13,13 @@ import Logger from '../utils/logger';
  * Redirects user to Google's OAuth consent screen
  */
 export const googleLogin = passport.authenticate('google', {
-    scope: ['profile', 'email'],
+    scope: [
+        'profile',
+        'email',
+        'https://www.googleapis.com/auth/gmail.readonly',
+    ],
+    accessType: 'offline',
+    prompt: 'consent',
 });
 
 /**

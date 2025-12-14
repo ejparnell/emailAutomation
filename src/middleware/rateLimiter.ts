@@ -3,7 +3,15 @@ import { Request, Response } from 'express';
 import Logger from '../utils/logger';
 
 /**
- * Rate Limiter Middleware
+ * Rateexport const apiRateLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 200,
+    message: 'API rate limit exceeded. Please try again later.',
+    standardHeaders: true,
+    legacyHeaders: false,
+    handler: rateLimitHandler,
+    skip: shouldSkipRateLimit,
+});ddleware
  *
  * Protects the application against brute force attacks by limiting
  * the number of requests from a single IP address.
@@ -13,6 +21,14 @@ import Logger from '../utils/logger';
  * - Standard: For general API endpoints
  * - Lenient: For public endpoints like health checks
  */
+
+/**
+ * Check if rate limiting should be skipped
+ * Skip in test and development environments
+ */
+const shouldSkipRateLimit = (): boolean => {
+    return process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'development';
+};
 
 /**
  * Custom handler for rate limit exceeded
@@ -54,9 +70,7 @@ export const strictRateLimiter = rateLimit({
     standardHeaders: true,
     legacyHeaders: false,
     handler: rateLimitHandler,
-    skip: () => {
-        return process.env.NODE_ENV === 'test';
-    },
+    skip: shouldSkipRateLimit,
 });
 
 /**
@@ -77,9 +91,7 @@ export const standardRateLimiter = rateLimit({
     standardHeaders: true,
     legacyHeaders: false,
     handler: rateLimitHandler,
-    skip: () => {
-        return process.env.NODE_ENV === 'test';
-    },
+    skip: shouldSkipRateLimit,
 });
 
 /**
@@ -100,9 +112,7 @@ export const lenientRateLimiter = rateLimit({
     standardHeaders: true,
     legacyHeaders: false,
     handler: rateLimitHandler,
-    skip: () => {
-        return process.env.NODE_ENV === 'test';
-    },
+    skip: shouldSkipRateLimit,
 });
 
 /**
@@ -123,9 +133,7 @@ export const globalRateLimiter = rateLimit({
     standardHeaders: true,
     legacyHeaders: false,
     handler: rateLimitHandler,
-    skip: () => {
-        return process.env.NODE_ENV === 'test';
-    },
+    skip: shouldSkipRateLimit,
 });
 
 /**
